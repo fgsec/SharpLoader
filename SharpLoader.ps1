@@ -86,7 +86,7 @@ function compile-SharpLoader {
         console -text "Compilation is completed!" -type "ok"
         console -text "Finishing process..."
         Copy-Item "$projectFolder\Sharploader\bin\Release\Sharploader.exe" "$PSScriptRoot\$guid.exe" -Force
-        #Remove-item -Path $projectFolder -Recurse -Force
+        Remove-item -Path $projectFolder -Recurse -Force
         $finalfolder = "$PSScriptRoot\.projects\$guid-completed"
         New-item -Path $finalfolder -ItemType Directory
         Move-Item "$PSScriptRoot\$guid.exe" "$finalfolder\csharpbin.exe" -Force
